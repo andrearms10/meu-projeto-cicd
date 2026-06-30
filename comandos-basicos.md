@@ -132,6 +132,73 @@ Quando você executar o comando `git push`, o terminal vai pedir o seu **Usernam
 
 <br>
 
+### git status
+
+O git status é o comando mais importante do seu dia a dia. Ele funciona como um raio-X do seu projeto, mostrando exatamente o que mudou na sua pasta desde o seu último commit. [1, 2] 
+Quando você digita git status, o Git divide seus arquivos em três situações possíveis, identificadas por cores no terminal: [3] 
+## 1. Arquivos em Vermelho (Untracked / Modified)
+Significa que o Git percebeu alterações, mas elas ainda não estão salvas e nem preparadas. [4, 5, 6, 7] 
+
+* Untracked files: Arquivos novos que você acabou de criar e o Git ainda não monitora.
+* Changes not staged for commit: Arquivos antigos que você alterou ou deletou. [8, 9] 
+
+## 2. Arquivos em Verde (Changes to be committed)
+Significa que você já rodou o comando git add. Eles estão na "área de estágio" (Staging Area), prontos para serem salvos definitivamente no próximo commit. [10, 11, 12, 13] 
+## 3. Mensagem "nothing to commit, working tree clean"
+Significa que sua pasta está totalmente limpa. Todos os seus arquivos já foram salvos no Git e não há nenhuma modificação pendente na sua máquina. [14, 15] 
+------------------------------
+## Exemplo Prático de Saída
+Ao rodar o comando, você verá algo parecido com isto:
+
+```
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	new file:   index.html (VERDE)
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+	modified:   estilo.css (VERMELHO)
+```
+<br>
+
+
+---
+
+O comando git clone <URL> serve para baixar uma cópia exata de um projeto que já existe na nuvem (como no GitHub) para o seu computador. [1, 2, 3] 
+Ele é o ponto de partida quando você vai começar a trabalhar em um projeto que já foi iniciado por você ou por outra pessoa. [4] 
+------------------------------
+## O que o git clone faz de verdade?
+Quando você roda esse comando, o Git faz três coisas de uma vez automaticamente:
+
+   1. Cria uma nova pasta no seu computador com o mesmo nome do projeto.
+   2. Baixa todos os arquivos e todo o histórico de alterações (commits) da nuvem.
+   3. Conecta automaticamente a sua pasta local com o link da nuvem (ele já roda o git remote add origin por baixo dos panos para você). [5, 6] 
+
+## Como usar na prática
+
+   1. Vá até a página do projeto no GitHub.
+   2. Clique no botão verde "Code" e copie a URL do repositório.
+   3. No seu terminal (dentro da pasta onde você quer guardar seus projetos), digite:
+   
+   git clone https://github.com
+   
+   [7, 8, 9, 10] 
+
+## Uma dica importante (O erro mais comum)
+Depois que o comando terminar, você precisa entrar na pasta que o Git acabou de criar antes de começar a trabalhar. Se você esquecer disso, estará tentando rodar comandos na pasta errada.
+Sempre faça isso logo após clonar:
+
+cd nome-do-projeto
+
+
+<br>
+
+---
+
+<br>
 
 ### O que significa o que significa o ~ em Paula@HP_Sam MINGW64 ~
 
@@ -146,6 +213,8 @@ Aqui está o desmembramento completo do que aparece na sua tela:
 • **~**: A sua localização atual, que equivale ao caminho físico `C:\Users\Paula`.
 
 ---
+
+<br>
 
 ### **Como criar arquivos com o `echo`**
 
