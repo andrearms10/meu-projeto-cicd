@@ -198,7 +198,34 @@ cd nome-do-projeto
 
 ---
 
+git pull
+O comando git pull serve para trazer e aplicar as novidades da nuvem (GitHub) para o seu computador.
+Ele é o oposto do git push. Enquanto o push envia o seu código para a nuvem, o pull puxa o código da nuvem para a sua máquina.
+------------------------------
+## Quando você deve usar o git pull?
+Você usa esse comando em duas situações principais:
+
+   1. Trabalho em equipe: Quando outra pessoa do seu time fez alterações no projeto, enviou para o GitHub, e você precisa atualizar a sua máquina antes de continuar trabalhando.
+   2. Você mesmo em outro PC: Quando você mexe no código pelo notebook, envia para o GitHub, e depois vai trabalhar no computador de mesa.
+
+## O que ele faz por baixo dos panos?
+O git pull é, na verdade, a união de dois comandos automáticos:
+
+   1. git fetch: Ele vai até o GitHub e olha o que tem de novo lá.
+   2. git merge: Ele pega essas novidades e as mistura (funde) com os arquivos que já estão na sua máquina. [1] 
+
+## Como usar na prática
+Basta abrir o terminal dentro da pasta do projeto e digitar: [2] 
+
+git pull
+
+## Boa prática do dia a dia
+Sempre rode o git pull antes de começar a trabalhar. Se você começar a escrever código novo sem puxar o que mudou na nuvem, você pode gerar um "conflito de merge" (quando duas pessoas mexem na mesma linha do mesmo arquivo), e terá que resolver isso manualmente.
+Você quer entender o que fazer se o git pull der um conflito ou prefere ver como o comando avisa que tudo já estava atualizado?
+
 <br>
+
+---
 
 ### O que significa o que significa o ~ em Paula@HP_Sam MINGW64 ~
 
