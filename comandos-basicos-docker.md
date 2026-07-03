@@ -28,3 +28,5 @@ Anotações e comandos essenciais para a aula de Docker.
 ### 🚨 Truque do Git Bash (Para o Windows)
 Se o Git Bash der erro de caminho (`No such file or directory`), use duas barras:
 * `docker run --rm ubuntu:22.04 cat //etc//os-release`
+
+Teste usando vscode com github
