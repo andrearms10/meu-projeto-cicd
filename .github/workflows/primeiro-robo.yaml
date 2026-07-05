@@ -1,0 +1,23 @@
+# Nome do seu robô
+name: Meu Primeiro Robo de Padronização
+
+# QUANDO ele deve trabalhar? (Gatilho)
+on:
+  workflow_dispatch:
+
+# O QUE ele vai fazer?
+jobs:
+  verificacao:
+    # Em qual "máquina" ele vai rodar? (Geralmente Ubuntu)
+    runs-on: ubuntu-latest
+
+    # Lista de passos (A receita do bolo)
+    steps:
+      - name: Pegar o código do repositório
+        uses: actions/checkout@v4
+
+      - name: Rodar um comando de teste
+        run: echo "Verificando se os padrões estão nos trilhos..."
+
+      - name: Mostrar a data atual
+        run: date
