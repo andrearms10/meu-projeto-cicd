@@ -14,7 +14,7 @@ jobs:
     # Lista de passos (A receita do bolo)
     steps:
       - name: Pegar o código do repositório
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Rodar um comando de teste
         run: echo "Verificando se os padrões estão nos trilhos..."
