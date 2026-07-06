@@ -4,73 +4,78 @@ on:
   workflow_dispatch:
     inputs:
       arquivo_para_validar:
-        description: 'Caminho do arquivo .yml dentro de .github/workflows/ para validar'
+        description: 'Caminho do arquivo YAML a validar (.yml ou .yaml)'
         required: true
         type: string
 
 jobs:
-  validar_anatomia:
-    name: Validar Anatomia do Workflow
+  validar_padroes:
+    name: Validar Padrões de Workflow
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout do repositório
         uses: actions/checkout@v6
 
-      - name: Validar campos obrigatórios do arquivo
-        env:
-          ARQUIVO: ${{ inputs.arquivo_para_validar }}
+      - name: Validar anatomia do arquivo YAML
+n        env:
+          ARQUIVO_ALVO: ${{ inputs.arquivo_para_validar }}
         run: |
           set -e
 
-          echo "=== Guardião de Padrões ==="
-          echo "Arquivo alvo: $ARQUIVO"
-          echo ""
+          echo "Arquivo informado: $ARQUIVO_ALVO"
 
-          # Resolve o caminho completo dentro de .github/workflows/
-          BASE_DIR=".github/workflows"
-          if [[ "$ARQUIVO" == "$BASE_DIR"/* ]]; then
-            CAMINHO_COMPLETO="$ARQUIVO"
-          else
-            CAMINHO_COMPLETO="$BASE_DIR/$ARQUIVO"
-          fi
+          # Normaliza o caminho informado e remove eventuais extensões duplicadas
+          base_path="${ARQUIVO_ALVO%.*}"
 
-          echo "Caminho resolvido: $CAMINHO_COMPLETO"
-          echo ""
-
-          # Verifica se o arquivo existe
-          if [[ ! -f "$CAMINHO_COMPLETO" ]]; then
-            echo "❌ ERRO: O arquivo '$CAMINHO_COMPLETO' não foi encontrado."
-            exit 1
-          fi
-
-          echo "✅ SUCESSO: O arquivo '$CAMINHO_COMPLETO' foi encontrado."
-          echo ""
-
-          # Lista de campos obrigatórios da anatomia
-          CAMPOS=("name:" "on:" "jobs:" "runs-on:" "steps:")
-
-          ERROS=0
-
-          for CAMPO in "${CAMPOS[@]}"; do
-            if grep -q "^${CAMPO}" "$CAMINHO_COMPLETO" || grep -q "^[[:space:]]*${CAMPO}" "$CAMINHO_COMPLETO"; then
-              echo "✅ SUCESSO: Campo obrigatório '${CAMPO}' encontrado no arquivo."
-            else
-              echo "❌ ERRO: Campo obrigatório '${CAMPO}' NÃO encontrado no arquivo."
-              ERROS=$((ERROS + 1))
+          # Busca o arquivo independentemente da extensão (.yml ou .yaml)
+          arquivo_encontrado=""
+          for ext in "yml" "yaml"; do
+            candidato="${base_path}.${ext}"
+            if [ -f "$candidato" ]; then
+              arquivo_encontrado="$candidato"
+              break
             fi
           done
 
-          echo ""
-          echo "=== Resumo da Validação ==="
-          echo "Total de campos verificados: ${#CAMPOS[@]}"
-          echo "Erros encontrados: $ERROS"
-
-          if [[ "$ERROS" -gt 0 ]]; then
-            echo ""
-            echo "❌ Validação FALHOU: O arquivo não possui todos os campos obrigatórios da anatomia."
+          if [ -z "$arquivo_encontrado" ]; then
+            echo "❌ Arquivo não encontrado: $ARQUIVO_ALVO (.yml ou .yaml)"
             exit 1
           fi
 
-          echo ""
-          echo "✅ Validação CONCLUÍDA COM SUCESSO: Todos os campos obrigatórios estão presentes."
+          echo "✅ Arquivo encontrado: $arquivo_encontrado"
+
+          # Validação de anatomia do GitHub Actions Workflow
+          erros=0
+
+          if ! grep -Eq '^name:' "$arquivo_encontrado"; then
+            echo "❌ Campo obrigatório ausente: name"
+            erros=$((erros + 1))
+          fi
+
+          if ! grep -Eq '^on:' "$arquivo_encontrado"; then
+            echo "❌ Campo obrigatório ausente: on"
+            erros=$((erros + 1))
+          fi
+
+          if ! grep -Eq '^jobs:' "$arquivo_encontrado"; then
+            echo "❌ Campo obrigatório ausente: jobs"
+            erros=$((erros + 1))
+          fi
+
+          if ! grep -Eq 'runs-on:' "$arquivo_encontrado"; then
+            echo "❌ Campo obrigatório ausente: runs-on"
+            erros=$((erros + 1))
+          fi
+
+          if ! grep -Eq 'steps:' "$arquivo_encontrado"; then
+            echo "❌ Campo obrigatório ausente: steps"
+            erros=$((erros + 1))
+          fi
+
+          if [ "$erros" -gt 0 ]; then
+            echo "❌ Validação falhou com $erros erro(s)."
+            exit 1
+          fi
+
+          echo "🎉 Anatomia válida! O arquivo segue os padrões esperados."
