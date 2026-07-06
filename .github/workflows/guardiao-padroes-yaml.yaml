@@ -1,0 +1,76 @@
+name: Guardião de Padrões
+
+on:
+  workflow_dispatch:
+    inputs:
+      arquivo_para_validar:
+        description: 'Caminho do arquivo .yml dentro de .github/workflows/ para validar'
+        required: true
+        type: string
+
+jobs:
+  validar_anatomia:
+    name: Validar Anatomia do Workflow
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v6
+
+      - name: Validar campos obrigatórios do arquivo
+        env:
+          ARQUIVO: ${{ inputs.arquivo_para_validar }}
+        run: |
+          set -e
+
+          echo "=== Guardião de Padrões ==="
+          echo "Arquivo alvo: $ARQUIVO"
+          echo ""
+
+          # Resolve o caminho completo dentro de .github/workflows/
+          BASE_DIR=".github/workflows"
+          if [[ "$ARQUIVO" == "$BASE_DIR"/* ]]; then
+            CAMINHO_COMPLETO="$ARQUIVO"
+          else
+            CAMINHO_COMPLETO="$BASE_DIR/$ARQUIVO"
+          fi
+
+          echo "Caminho resolvido: $CAMINHO_COMPLETO"
+          echo ""
+
+          # Verifica se o arquivo existe
+          if [[ ! -f "$CAMINHO_COMPLETO" ]]; then
+            echo "❌ ERRO: O arquivo '$CAMINHO_COMPLETO' não foi encontrado."
+            exit 1
+          fi
+
+          echo "✅ SUCESSO: O arquivo '$CAMINHO_COMPLETO' foi encontrado."
+          echo ""
+
+          # Lista de campos obrigatórios da anatomia
+          CAMPOS=("name:" "on:" "jobs:" "runs-on:" "steps:")
+
+          ERROS=0
+
+          for CAMPO in "${CAMPOS[@]}"; do
+            if grep -q "^${CAMPO}" "$CAMINHO_COMPLETO" || grep -q "^[[:space:]]*${CAMPO}" "$CAMINHO_COMPLETO"; then
+              echo "✅ SUCESSO: Campo obrigatório '${CAMPO}' encontrado no arquivo."
+            else
+              echo "❌ ERRO: Campo obrigatório '${CAMPO}' NÃO encontrado no arquivo."
+              ERROS=$((ERROS + 1))
+            fi
+          done
+
+          echo ""
+          echo "=== Resumo da Validação ==="
+          echo "Total de campos verificados: ${#CAMPOS[@]}"
+          echo "Erros encontrados: $ERROS"
+
+          if [[ "$ERROS" -gt 0 ]]; then
+            echo ""
+            echo "❌ Validação FALHOU: O arquivo não possui todos os campos obrigatórios da anatomia."
+            exit 1
+          fi
+
+          echo ""
+          echo "✅ Validação CONCLUÍDA COM SUCESSO: Todos os campos obrigatórios estão presentes."
